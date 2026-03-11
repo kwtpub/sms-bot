@@ -12,12 +12,11 @@ use App\Models\chatBot\traits\start_;
 use App\Models\chatBot\traits\help;
 use App\Models\chatBot\traits\history;
 use App\Models\chatBot\traits\referral;
-use App\Models\chatBot\traits\order;
 use App\Models\chatBot\traits\shared;
 
 class NewMessage extends _NewMessage
 {
-    use shared, start_, menu, admin, lk, help, history, referral, order;
+    use shared, start_, menu, admin, lk, help, history, referral;
 
     public function handler()
     {
@@ -29,9 +28,6 @@ class NewMessage extends _NewMessage
             case "/menu":
             case "Открыть меню":
                 $this->menu(0);
-                break;
-            case "Запустить кампанию":
-                $this->start_order(0);
                 break;
             case "Мой кабинет":
             case "Кабинет":
@@ -50,9 +46,6 @@ class NewMessage extends _NewMessage
                 if ($this->checkBindingFunction()) {
                     return;
                 } //Если мы куда-то забиндились, значит там уже обработалось.
-                if ($this->quick_order_entry()) {
-                    return;
-                }
 
                 $this->menu(0);
                 break;

@@ -8,22 +8,19 @@ trait admin
 {
     public function admin_lk($edit = 1)
     {
-        if (!$this->ckeckAdmin($edit)) {
+        if (!$this->ckeckAdmin()) {
             return;
         }
 
         $usersCount = User::count();
         $adminsCount = User::where("is_admin", 1)->count();
-        $paymentsCount = Pay::count();
-        $successPaymentsCount = Pay::where("status", "success")->count();
+        $paymentsCount = Pay::where("status", "success")->count();
 
         $text = implode("\n", [
             "<b>Админ-панель</b>",
             "",
             "Пользователей: <b>" . $usersCount . "</b>",
-            "Админов: <b>" . $adminsCount . "</b>",
             "Всего оплат: <b>" . $paymentsCount . "</b>",
-            "Успешных оплат: <b>" . $successPaymentsCount . "</b>",
         ]);
 
         $this->main->keyBoard->add("История оплат", "history_payments");
