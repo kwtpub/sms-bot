@@ -6,7 +6,7 @@ use App\Models\Pay;
 
 trait history
 {
-    public function history_orders()
+    public function history_orders($edit = 1)
     {
         $this->main->keyBoard->add("Назад", "lk");
 
@@ -17,10 +17,10 @@ trait history
             "После появления таблицы заказов здесь будет список с датой, номером, именем, режимом, стоимостью и статусом.",
         ]);
 
-        return $this->sendOrEditMsg($text);
+        return $this->sendOrEditMsg($edit, $text);
     }
 
-    public function history_payments(])
+    public function history_payments($edit = 1)
     {
         $this->main->keyBoard->add("Назад", "lk");
 
@@ -44,6 +44,6 @@ trait history
             }
         }
 
-        return $this->sendOrEditMsg(implode("\n", $lines));
+        return $this->sendOrEditMsg($edit, implode("\n", $lines));
     }
 }
