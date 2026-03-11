@@ -21,7 +21,8 @@ trait shared
 
     private function getDiscountPercent(): int
     {
-        return (int) ($this->main->user->discount ?? 0);
+        // TODO: поле discount отсутствует в актуальных миграциях.
+        return 0;
     }
 
     private function getReferralCount(): int
@@ -31,7 +32,8 @@ trait shared
 
     private function getReferralBonusAmount(): float
     {
-        return (float) ($this->main->user->referral_bonus ?? 0);
+        // TODO: поле referral_bonus отсутствует в актуальных миграциях.
+        return 0;
     }
 
     private function getReferralLink(): string
@@ -48,8 +50,8 @@ trait shared
 
     private function getSupportManagerName(): string
     {
-        return $this->main->bot->manager_username ??
-            ($this->main->bot->support_manager ?? "@manager");
+        // TODO: поля manager_username / support_manager отсутствуют в актуальных миграциях.
+        return "@manager";
     }
 
     private function getCampaignModeLabel(string $mode): string
