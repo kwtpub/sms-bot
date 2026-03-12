@@ -22,7 +22,7 @@ trait start_
             "Скидка: <b>+" . $this->getDiscountPercent() . "%</b>",
             "",
             "Приглашай друзей и получай 10% от их трат себе на счет.",
-            "<code>' . e($this->getReferralLink()) . '</code>",
+            "<code>" . e($this->getReferralLink()) . "</code>",
         ]);
 
         return $this->sendOrEditMsg($edit, $text);
