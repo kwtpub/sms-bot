@@ -34,16 +34,10 @@ trait ringing
             !isset($this->main->callback["type-ringing"]) ||
             trim((string) $this->main->callback["type-ringing"]) === ""
         ) {
-            $this->bindingUserFunction(
-                "ringing",
-                [
-                    "number" => $this->main->callback["number"],
-                    "name" => $this->main->callback["name"],
-                ],
-                "type-ringing",
-            );
+            $this->main->keyBoard->add("Один прозвон", ["ringing", "number" => $this->main->callback["number"], "name" => $this->main->callback["name"], "type-ringing" => "single"]);
+            $this->main->keyBoard->add("Тройной прозвон", ["ringing", "number" => $this->main->callback["number"], "name" => $this->main->callback["name"], "type-ringing" => "triple"]);
             $this->main->keyBoard->add("Отмена", "start");
-            return $this->editMsg("Введите тип прогона");
+            return $this->editMsg("Выберите тип прозвона:");
         }
         $this->editMsg(
             "Вы ввели номер: " .
