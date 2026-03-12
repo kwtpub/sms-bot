@@ -4,7 +4,7 @@ namespace App\Models\chatBot\traits;
 
 trait ringing
 {
-    public function ringing($edit)
+    public function ringing()
     {
         $this->main->keyBoard->add("Как считается скидка?", "discount_help");
         // $this->main->keyBoard->add("Назад", "start");
@@ -17,6 +17,6 @@ trait ringing
         // ]);
         //
 
-        return $this->sendOrEditMsg($edit, "Введите номер жертвы");
+        return $this->editMsg($edit, "Введите номер жертвы");
     }
 }
