@@ -6,7 +6,6 @@ trait ringing
 {
     public function ringing()
     {
-        $this->main->keyBoard->add("Как считается скидка?", "discount_help");
         // $this->main->keyBoard->add("Назад", "start");
 
         // $text = implode("\n", [
@@ -16,7 +15,15 @@ trait ringing
         //     "",
         // ]);
         //
+        if (
+            empty($this->main->callback["number"]) ||
+            !intval($this->main->callback["number"])
+        ) {
+            $this->bindingUserFunction("ringing", [], "number");
+            $this->main->keyBoard->add("Отмена", "start");
+            return $this->editMsg("Введите номер жертвы");
+        }
 
-        return $this->editMsg("Введите номер жертвы");
+        $this->editMsg("Вы ввели номер: " . $this->main->callback["number"])
     }
 }
