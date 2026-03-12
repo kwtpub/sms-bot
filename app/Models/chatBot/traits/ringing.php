@@ -37,10 +37,7 @@ trait ringing
             );
         }
 
-        if (
-            !isset($this->main->callback["name"]) ||
-            trim((string) $this->main->callback["name"]) === ""
-        ) {
+        if (!array_key_exists("name", $this->main->callback)) {
             $this->bindingUserFunction(
                 "ringing",
                 [
@@ -51,7 +48,7 @@ trait ringing
             $this->main->keyBoard->add("Пропустить", [
                 "ringing",
                 "number" => $normalizedPhone,
-                "name" => " ",
+                "name" => "",
             ]);
             $this->main->keyBoard->add("Отмена", "start");
             return $this->editMsg("Введите имя жертвы");
