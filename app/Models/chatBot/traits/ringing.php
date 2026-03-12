@@ -43,8 +43,8 @@ trait ringing
             "Вы ввели номер: " .
                 $this->main->callback["number"] .
                 "\nВы ввели имя: " .
-                $this->main->callback["name"],
-            "\nВы ввели тип прозвона: " . $this->main->callback["type-ringing"],
+                $this->main->callback["name"] .
+                "\nВы ввели тип прозвона: " . $this->main->callback["type-ringing"],
         );
     }
 }
