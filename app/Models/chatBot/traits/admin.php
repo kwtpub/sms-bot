@@ -24,7 +24,7 @@ trait admin
         ]);
 
         $this->main->keyBoard->add("История оплат", "history_payments");
-        $this->main->keyBoard->add("Назад", "menu");
+        $this->main->keyBoard->add("Назад", "start");
 
         return $this->sendOrEditMsg($edit, $text);
     }
@@ -33,7 +33,7 @@ trait admin
     {
         //Проверка прав админа
         if (!$this->main->user->is_admin) {
-            $this->main->keyBoard->add("↩️ Меню", "menu");
+            $this->main->keyBoard->add("↩️ Назад", "start");
 
             if ($edit) {
                 $this->editMsg("У вас нет прав!");

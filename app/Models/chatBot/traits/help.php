@@ -7,7 +7,7 @@ trait help
     public function help($edit = 1)
     {
         $this->main->keyBoard->add("Как считается скидка?", "discount_help");
-        $this->main->keyBoard->add("Назад", "menu");
+        $this->main->keyBoard->add("Назад", "start");
 
         $text = implode("\n", [
             "<b>Помощь</b>",

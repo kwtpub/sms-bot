@@ -8,7 +8,7 @@ trait lk
         $this->main->keyBoard->add("История заказов", "history_orders");
         $this->main->keyBoard->add("История оплат", "history_payments");
         $this->main->keyBoard->add("Реферальная ссылка", "referral_info");
-        $this->main->keyBoard->add("Назад", "menu");
+        $this->main->keyBoard->add("Назад", "start");
 
         return $this->editMsg($this->buildCabinetText(), $edit ? 0 : 3);
     }
