@@ -17,6 +17,6 @@ trait ringing
         // ]);
         //
 
-        return $this->sendOrEditMsg("Введите номер жертвы");
+        return $this->sendOrEditMsg($edit, "Введите номер жертвы");
     }
 }
