@@ -110,18 +110,6 @@ trait shared
         return "+" . $digits;
     }
 
-    private function resolveCampaignName(?string $name): string
-    {
-        $name = trim((string) $name);
-        if ($name !== "") {
-            return mb_substr($name, 0, 64);
-        }
-
-        $names = ["Алексей", "Мария", "Ирина", "Дмитрий", "Анна", "Егор"];
-
-        return $names[array_rand($names)];
-    }
-
     private function parseQuickCampaignInput(string $text): ?array
     {
         $text = trim(preg_replace("/\s+/u", " ", $text));
