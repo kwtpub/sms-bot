@@ -15,8 +15,6 @@ trait ringing
             return $this->editMsg("Введите номер жертвы");
         }
 
-        $this->editMsg("Вы ввели номер: " . $this->main->callback["number"]);
-
         if (
             !isset($this->main->callback["name"]) ||
             trim((string) $this->main->callback["name"]) === ""
@@ -31,11 +29,28 @@ trait ringing
             $this->main->keyBoard->add("Отмена", "start");
             return $this->editMsg("Введите имя жертвы");
         }
+
+        if (
+            !isset($this->main->callback["type-ringing"]) ||
+            trim((string) $this->main->callback["type-ringing"]) === ""
+        ) {
+            $this->bindingUserFunction(
+                "ringing",
+                [
+                    "number" => $this->main->callback["number"],
+                    "name" => $this->main->callback["name"],
+                ],
+                "type-ringing",
+            );
+            $this->main->keyBoard->add("Отмена", "start");
+            return $this->editMsg("Введите тип прогона");
+        }
         $this->editMsg(
             "Вы ввели номер: " .
                 $this->main->callback["number"] .
                 "\nВы ввели имя: " .
                 $this->main->callback["name"],
+            "\nВы ввели тип прозвона: " . $this->main->callback["type-ringing"],
         );
     }
 }
