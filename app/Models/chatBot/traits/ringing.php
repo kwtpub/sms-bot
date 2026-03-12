@@ -24,6 +24,6 @@ trait ringing
             return $this->editMsg("Введите номер жертвы");
         }
 
-        $this->editMsg("Вы ввели номер: " . $this->main->callback["number"])
+        $this->editMsg("Вы ввели номер: " . $this->main->callback["number"]);
     }
 }
