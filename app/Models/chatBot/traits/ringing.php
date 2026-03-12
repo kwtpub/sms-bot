@@ -2,6 +2,8 @@
 
 namespace App\Models\chatBot\traits;
 
+use App\Models\User;
+
 trait ringing
 {
     private function resolveCampaignName(?string $name): string
@@ -24,11 +26,15 @@ trait ringing
             return $this->editMsg("Введите номер жертвы");
         }
 
-        $normalizedPhone = $this->normalizePhone((string) $this->main->callback["number"]);
+        $normalizedPhone = $this->normalizePhone(
+            (string) $this->main->callback["number"],
+        );
         if ($normalizedPhone === null) {
             $this->bindingUserFunction("ringing", [], "number");
             $this->main->keyBoard->add("Отмена", "start");
-            return $this->editMsg("Неверный формат номера. Введите номер повторно:");
+            return $this->editMsg(
+                "Неверный формат номера. Введите номер повторно:",
+            );
         }
 
         if (
@@ -42,28 +48,70 @@ trait ringing
                 ],
                 "name",
             );
-            $this->main->keyBoard->add("Пропустить", ["ringing", "number" => $normalizedPhone, "name" => " "]);
+            $this->main->keyBoard->add("Пропустить", [
+                "ringing",
+                "number" => $normalizedPhone,
+                "name" => " ",
+            ]);
             $this->main->keyBoard->add("Отмена", "start");
             return $this->editMsg("Введите имя жертвы");
         }
 
-        $resolvedName = $this->resolveCampaignName($this->main->callback["name"]);
+        $resolvedName = $this->resolveCampaignName(
+            $this->main->callback["name"],
+        );
 
         if (
             !isset($this->main->callback["type-ringing"]) ||
             trim((string) $this->main->callback["type-ringing"]) === ""
         ) {
-            $this->main->keyBoard->add("Один прозвон", ["ringing", "number" => $normalizedPhone, "name" => $resolvedName, "type-ringing" => "single"]);
-            $this->main->keyBoard->add("Тройной прозвон", ["ringing", "number" => $normalizedPhone, "name" => $resolvedName, "type-ringing" => "triple"]);
+            $this->main->keyBoard->add("Один прозвон", [
+                "ringing",
+                "number" => $normalizedPhone,
+                "name" => $resolvedName,
+                "type-ringing" => "single",
+            ]);
+            $this->main->keyBoard->add("Тройной прозвон", [
+                "ringing",
+                "number" => $normalizedPhone,
+                "name" => $resolvedName,
+                "type-ringing" => "triple",
+            ]);
             $this->main->keyBoard->add("Отмена", "start");
             return $this->editMsg("Выберите тип прозвона:");
         }
+
+        $typeRinging = (string) $this->main->callback["type-ringing"];
+        $price = $typeRinging === "triple" ? 250 : 100;
+
+        $affected = User::where("id", $this->main->user->id)
+            ->where("balance", ">=", $price)
+            ->decrement("balance", $price);
+
+        if (!$affected) {
+            $this->main->keyBoard->add("Пополнить баланс", "top_up_balance");
+            $this->main->keyBoard->add("Отмена", "start");
+
+            return $this->editMsg(
+                "Недостаточно средств для запуска.\nНужно: " .
+                    $this->formatMoney($price),
+            );
+        }
+
+        $this->main->user->refresh();
+        $this->main->keyBoard->add("На главную", "start");
+
         $this->editMsg(
             "Вы ввели номер: " .
                 $normalizedPhone .
                 "\nВы ввели имя: " .
                 $resolvedName .
-                "\nВы ввели тип прозвона: " . $this->main->callback["type-ringing"],
+                "\nВы ввели тип прозвона: " .
+                $typeRinging .
+                "\nСписано: " .
+                $this->formatMoney($price) .
+                "\nОстаток: " .
+                $this->formatMoney($this->main->user->balance),
         );
     }
 }
