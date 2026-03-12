@@ -16,7 +16,7 @@ use App\Models\chatBot\traits\ringing;
 
 class NewMessage extends _NewMessage
 {
-    use shared, start_, admin, lk, help, history, referral;
+    use shared, start_, admin, lk, help, history, referral, ringing;
 
     public function handler()
     {
