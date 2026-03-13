@@ -2,7 +2,9 @@
 
 namespace App\Models\chatBot\traits;
 
+use App\Models\Order;
 use App\Models\User;
+use Illuminate\Support\Facades\Http;
 
 trait ringing
 {
@@ -95,15 +97,34 @@ trait ringing
             );
         }
 
+        $order = Order::create([
+            "user_id" => $this->main->user->id,
+            "phone" => $normalizedPhone,
+            "name" => $resolvedName,
+            "type" => $typeRinging,
+            "price" => $price,
+            "status" => "pending",
+        ]);
+
+        Http::get(env("RINGING_API_URL") . "/attack", [
+            "phone" => $normalizedPhone,
+            "name" => $resolvedName,
+            "token" => env("TOKEN"),
+            "threads" => 1,
+            "triple_launch" => $typeRinging === "triple",
+        ]);
+
+        $order->update(["status" => "processing"]);
+
         $this->main->user->refresh();
         $this->main->keyBoard->add("На главную", "start");
 
         $this->editMsg(
-            "Вы ввели номер: " .
+            "Запущен прозвон!\nНомер: " .
                 $normalizedPhone .
-                "\nВы ввели имя: " .
+                "\nИмя: " .
                 $resolvedName .
-                "\nВы ввели тип прозвона: " .
+                "\nТип: " .
                 $typeRinging .
                 "\nСписано: " .
                 $this->formatMoney($price) .
