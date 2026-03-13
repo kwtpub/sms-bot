@@ -106,15 +106,22 @@ trait ringing
             "status" => "pending",
         ]);
 
-        Http::get(env("RINGING_API_URL") . "/attack", [
-            "phone" => $normalizedPhone,
-            "name" => $resolvedName,
-            "token" => env("TOKEN"),
-            "threads" => 1,
+        $response = Http::get(env("RINGING_API_URL") . "/example", [
+            "phone"         => $normalizedPhone,
+            "name"          => $resolvedName,
+            "token"         => env("TOKEN"),
+            "threads"       => 1,
             "triple_launch" => $typeRinging === "triple",
         ]);
 
-        $order->update(["status" => "processing"]);
+        $apiId = $response->json("id");
+        $order->update([
+            "status" => "processing",
+            "api_id" => $apiId,
+        ]);
+
+        \App\Jobs\CheckRingingStatus::dispatch($order->id)
+            ->delay(now()->addSeconds(30));
 
         $this->main->user->refresh();
         $this->main->keyBoard->add("На главную", "start");

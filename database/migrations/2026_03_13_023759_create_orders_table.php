@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('phone', 20);
             $table->string('name', 64);
+            $table->string('api_id')->nullable();
             $table->enum('type', ['single', 'triple']);
             $table->decimal('price', 10, 2);
             $table->enum('status', ['pending', 'processing', 'done', 'failed'])->default('pending');
