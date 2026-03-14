@@ -7,6 +7,7 @@ use App\Models\src\chatBot\NewMessage as _NewMessage;
 //Трейты кнопок:
 use App\Models\chatBot\traits\admin;
 use App\Models\chatBot\traits\lk;
+use App\Models\chatBot\traits\top_up_balance;
 use App\Models\chatBot\traits\start_;
 use App\Models\chatBot\traits\help;
 use App\Models\chatBot\traits\history;
@@ -16,7 +17,7 @@ use App\Models\chatBot\traits\ringing;
 
 class NewMessage extends _NewMessage
 {
-    use shared, start_, admin, lk, help, history, referral, ringing;
+    use shared, start_, admin, lk, top_up_balance, help, history, referral, ringing;
 
     public function handler()
     {
