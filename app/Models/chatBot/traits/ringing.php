@@ -124,6 +124,10 @@ trait ringing
             ->delay(now()->addSeconds(30));
 
         $this->main->user->refresh();
+        $this->main->keyBoard->add("Посмотреть статус", [
+            "ringing_stats",
+            "order_id" => $order->id,
+        ]);
         $this->main->keyBoard->add("На главную", "start");
 
         $this->editMsg(

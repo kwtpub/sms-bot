@@ -14,10 +14,11 @@ use App\Models\chatBot\traits\history;
 use App\Models\chatBot\traits\referral;
 use App\Models\chatBot\traits\shared;
 use App\Models\chatBot\traits\ringing;
+use App\Models\chatBot\traits\ringing_stats;
 
 class NewMessage extends _NewMessage
 {
-    use shared, start_, admin, lk, top_up_balance, help, history, referral, ringing;
+    use shared, start_, admin, lk, top_up_balance, help, history, referral, ringing, ringing_stats;
 
     public function handler()
     {
