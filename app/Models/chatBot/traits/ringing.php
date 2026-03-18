@@ -46,7 +46,7 @@ trait ringing
 
         $raw = (string) $this->main->callback["number"];
         $parsed = $this->parseQuickCampaignInput($raw);
-        \Illuminate\Support\Facades\Log::debug('ringing input', ['raw' => $raw, 'parsed' => $parsed]);
+        \Illuminate\Support\Facades\Log::debug('ringing', ['raw' => $raw, 'parsed' => $parsed, 'callback' => $this->main->callback]);
 
         if ($parsed !== null) {
             $normalizedPhone = $parsed["phone"];
