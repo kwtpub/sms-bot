@@ -46,7 +46,11 @@ trait ringing
 
         $raw = (string) $this->main->callback["number"];
         $parsed = $this->parseQuickCampaignInput($raw);
-        \Illuminate\Support\Facades\Log::debug('ringing', ['raw' => $raw, 'parsed' => $parsed, 'callback' => $this->main->callback]);
+        \Illuminate\Support\Facades\Log::debug("ringing", [
+            "raw" => $raw,
+            "parsed" => $parsed,
+            "callback" => $this->main->callback,
+        ]);
 
         if ($parsed !== null) {
             $normalizedPhone = $parsed["phone"];
@@ -105,14 +109,9 @@ trait ringing
         $typeRinging = (string) $this->main->callback["type-ringing"];
         $price = $typeRinging === "triple" ? 500 : 250;
 
-        $affected = User::where("id", $this->main->user->id)
-            ->where("balance", ">=", $price)
-            ->decrement("balance", $price);
-
-        if (!$affected) {
+        if ($this->main->user->balance < $price) {
             $this->main->keyBoard->add("Пополнить баланс", "top_up_balance");
             $this->main->keyBoard->add("Отмена", "start");
-
             return $this->editMsg(
                 "Недостаточно средств для запуска.\nНужно: " .
                     $this->formatMoney($price),
@@ -129,10 +128,10 @@ trait ringing
         ]);
 
         $response = Http::get(env("RINGING_API_URL") . "/example", [
-            "phone"         => $normalizedPhone,
-            "name"          => $resolvedName,
-            "token"         => env("TOKEN"),
-            "threads"       => 1,
+            "phone" => $normalizedPhone,
+            "name" => $resolvedName,
+            "token" => env("TOKEN"),
+            "threads" => 1,
             "triple_launch" => $typeRinging === "triple",
         ]);
 
@@ -142,8 +141,9 @@ trait ringing
             "api_id" => $apiId,
         ]);
 
-        \App\Jobs\CheckRingingStatus::dispatch($order->id)
-            ->delay(now()->addSeconds(30));
+        \App\Jobs\CheckRingingStatus::dispatch($order->id)->delay(
+            now()->addSeconds(30),
+        );
 
         $this->main->user->refresh();
         $this->main->keyBoard->add("Посмотреть статус", [
