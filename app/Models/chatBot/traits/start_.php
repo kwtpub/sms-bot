@@ -13,15 +13,19 @@ trait start_
         }
 
         $text = implode("\n", [
-            "<b>Главный экран</b>",
+            "☎️Бот рассылает номер телефона по различным сайтам для обратного звонка.",
             "",
-            "Ваш ID: <code>" . $this->main->user->tg_id . "</code>",
-            "Баланс: <b>" .
+            "🆔Ваш ID: <code>" . $this->main->user->tg_id . "</code>",
+            "💰Баланс: <b>" .
             $this->formatMoney($this->main->user->balance) .
             "</b>",
-            "Скидка: <b>+" . $this->getDiscountPercent() . "%</b>",
+            "🏷️Персональная скидка: <b>" .
+            $this->getDiscountPercent() .
+            "%</b>",
             "",
-            "Приглашай друзей и получай 10% от их трат себе на счет.",
+            "💎Приглашай друзей и получай 10% от их трат себе на счет.",
+            "",
+            "Ссылка для приглашения 🔽",
             "<code>" . e($this->getReferralLink()) . "</code>",
         ]);
 

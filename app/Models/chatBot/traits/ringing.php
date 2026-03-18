@@ -25,63 +25,84 @@ trait ringing
         if (empty($this->main->callback["number"])) {
             $this->bindingUserFunction("ringing", [], "number");
             $this->main->keyBoard->add("Отмена", "start");
-            return $this->editMsg("Введите номер жертвы");
-        }
 
-        $normalizedPhone = $this->normalizePhone(
-            (string) $this->main->callback["number"],
-        );
-        if ($normalizedPhone === null) {
-            $this->bindingUserFunction("ringing", [], "number");
-            $this->main->keyBoard->add("Отмена", "start");
-            return $this->editMsg(
-                "Неверный формат номера. Введите номер повторно:",
-            );
-        }
-
-        if (!array_key_exists("name", $this->main->callback)) {
-            $this->bindingUserFunction(
-                "ringing",
-                [
-                    "number" => $normalizedPhone,
-                ],
-                "name",
-            );
-            $this->main->keyBoard->add("Пропустить", [
-                "ringing",
-                "number" => $normalizedPhone,
-                "name" => "",
+            $text = implode("\n", [
+                "Актуальная база сервиса:",
+                "🇷🇺: 20000+ сайтов",
+                "🇺🇦: 900+ сайтов",
+                "🇧🇾: 500+ сайтов",
+                "🇰🇿: 300+ сайтов",
+                "",
+                "⚡️Чтобы начать прогон отправьте боту данные по инструкции:",
+                "",
+                "<code>[номер] [имя]</code> — запуск прогона с именем",
+                "<code>[номер]</code> — запуск прогона с рандомным именем",
+                "",
+                "Пример: <code>79123456789 Иван</code>",
             ]);
-            $this->main->keyBoard->add("Отмена", "start");
-            return $this->editMsg("Введите имя жертвы");
+
+            return $this->editMsg($text);
         }
 
-        $resolvedName = $this->resolveCampaignName(
-            $this->main->callback["name"],
-        );
+        $raw = (string) $this->main->callback["number"];
+        $parsed = $this->parseQuickCampaignInput($raw);
+
+        if ($parsed !== null) {
+            $normalizedPhone = $parsed["phone"];
+            $resolvedName = $this->resolveCampaignName($parsed["name"]);
+        } else {
+            $normalizedPhone = $this->normalizePhone($raw);
+
+            if ($normalizedPhone === null) {
+                $this->bindingUserFunction("ringing", [], "number");
+                $this->main->keyBoard->add("Отмена", "start");
+                return $this->editMsg(
+                    "Неверный формат номера. Введите номер повторно:",
+                );
+            }
+
+            $resolvedName = $this->resolveCampaignName(
+                array_key_exists("name", $this->main->callback)
+                    ? (string) $this->main->callback["name"]
+                    : null,
+            );
+        }
 
         if (
             !isset($this->main->callback["type-ringing"]) ||
             trim((string) $this->main->callback["type-ringing"]) === ""
         ) {
-            $this->main->keyBoard->add("Один прозвон", [
+            $this->main->keyBoard->add("⚡️Одиночный - 250₽", [
                 "ringing",
                 "number" => $normalizedPhone,
                 "name" => $resolvedName,
                 "type-ringing" => "single",
             ]);
-            $this->main->keyBoard->add("Тройной прозвон", [
+            $this->main->keyBoard->add("🧨Тройной - 500₽", [
                 "ringing",
                 "number" => $normalizedPhone,
                 "name" => $resolvedName,
                 "type-ringing" => "triple",
             ]);
+            $this->main->keyBoard->add("💰Пополнить баланс", "top_up_balance");
             $this->main->keyBoard->add("Отмена", "start");
-            return $this->editMsg("Выберите тип прозвона:");
+
+            $balance = $this->formatMoney($this->main->user->balance);
+            $text = implode("\n", [
+                "Выберите тип прогона:",
+                "",
+                "⚡️Одиночный — 250₽",
+                "",
+                "🧨Тройной (Сразу, через час и на следующий рабочий день) — 500₽",
+                "",
+                "💰Ваш баланс: <b>{$balance}</b>",
+            ]);
+
+            return $this->editMsg($text);
         }
 
         $typeRinging = (string) $this->main->callback["type-ringing"];
-        $price = $typeRinging === "triple" ? 250 : 100;
+        $price = $typeRinging === "triple" ? 500 : 250;
 
         $affected = User::where("id", $this->main->user->id)
             ->where("balance", ">=", $price)

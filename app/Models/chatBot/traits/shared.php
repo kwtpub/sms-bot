@@ -65,8 +65,8 @@ trait shared
     private function getCampaignModePrice(string $mode): float
     {
         return match ($mode) {
-            "triple" => 250,
-            default => 100,
+            "triple" => 500,
+            default => 250,
         };
     }
 
